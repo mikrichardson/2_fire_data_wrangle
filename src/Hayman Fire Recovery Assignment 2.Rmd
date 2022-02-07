@@ -1,7 +1,7 @@
 ---
 title: "Hayman Fire Recovery"
 author: "Mikaela Richardson"
-date: "01/31/2022"
+date: "02/07/2022"
 output: html_document
 
 knit: (function(input, ...) {
@@ -65,7 +65,7 @@ function of if the site was burned or not (x axis should be ndmi)
 You should exclude winter months and focus on summer months
 
 There is a positive correlation between NDVI and NDMI with a value of 0.96. As moisture index increases so does vegetation index. In general, the plot indicates that for unburned sites the majority of them have high NDVI values as compared to the burned sites. For both types of sites, the plots indicate positive relationships. 
-```{r}
+```{r, message=F}
 # converting long data to wide
 full_wide <- spread(data=full_long,key='data',value='value') %>%
   filter_if(is.numeric,all_vars(!is.na(.))) %>%
@@ -96,7 +96,7 @@ In other words, does the previous year's snow cover influence vegetation
 
 Based on the correlation value of 0.18 there is a positive relationship meaning the previous year's snow cover does influence vegetation growth for the following summer. However, based on the low value it does not indicate a strong correlation between the two as compared to NDVI and NDMI in Question 1. 
 
-```{r}
+```{r, message=F}
 # summarizing the data by year
 ndvi_annual <- full_wide[c("DateTime", "ndvi", "month", "year", "site")] %>%
   filter(month %in% c(6,7,8)) %>%
@@ -133,7 +133,7 @@ Unburned sites correlation: -0.031
 
 There are positive correlations for NDVI and NDSI between pre- and post-burn dates and burned sites, and a negative correlation for unburned sites. Based on the correlation values and plots, the correlations are not noticeably strong.
 
-```{r}
+```{r, message=F}
 #pre burned correlation
 ndvi_pre <- full_wide[c("DateTime", "ndvi", "month", "year", "site")] %>%
   filter(month %in% c(6,7,8)) %>%
@@ -160,7 +160,7 @@ a <- ggplot(combined_pre,aes(x=ndsi_pre,y=ndvi_pre,color=site)) +
 
 ```
 
-```{r}
+```{r,message=F}
 #post burned correlation
 ndvi_post <- full_wide[c("DateTime", "ndvi", "month", "year", "site")] %>%
   filter(month %in% c(6,7,8)) %>%
@@ -186,7 +186,7 @@ b <- ggplot(combined_post,aes(x=ndsi_post,y=ndvi_post,color=site)) +
   labs(y="NDVI", x="NDSI", title = "b. Post-burn")
 ```
 
-```{r}
+```{r, message=F}
 #burned sites correlation
 ndvi_burn <- full_wide[c("DateTime", "ndvi", "month", "year", "site")] %>%
   filter(month %in% c(6,7,8)) %>%
@@ -212,7 +212,7 @@ c <- ggplot(combined_burned,aes(x=ndsi_burn,y=ndvi_burn)) +
   labs(y="NDVI", x="NDSI", title = "c. Burned sites")
 ```
 
-```{r}
+```{r, message=F}
 #unburned sites correlation
 ndvi_unburned <- full_wide[c("DateTime", "ndvi", "month", "year", "site")] %>%
   filter(month %in% c(6,7,8)) %>%
@@ -245,12 +245,10 @@ ggarrange(a,b,c,d, nrow = 2, ncol = 2)
 What month is the greenest month on average? 
 
 Based on the NDVI, the greenest month on average is August. 
-```{r}
+```{r, message=F}
 ndvi_mean <- full_wide[c("ndvi", "month")] %>%
   group_by(month) %>%
   summarize(ndvi_mean=mean(ndvi))
-
-head(ndvi_mean)
 
 ggplot(ndvi_mean, aes(x=month,y=ndvi_mean))+
   geom_bar(stat="identity")+
@@ -263,7 +261,7 @@ ggplot(ndvi_mean, aes(x=month,y=ndvi_mean))+
 What month is the snowiest on average?
 
 Based on NDSI, the snowiest month on average is January.
-```{r}
+```{r, message=F}
 ndsi_mean <- full_wide[c("ndsi", "month")] %>%
   group_by(month) %>%
   summarize(ndsi_mean=mean(ndsi))
